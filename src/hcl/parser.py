@@ -201,6 +201,7 @@ class HclParser(object):
         objectitem : objectkey EQUAL number
                    | objectkey EQUAL BOOL
                    | objectkey EQUAL STRING
+                   | objectkey EQUAL IDENTIFIER ASTERISK_PERIOD IDENTIFIER
                    | objectkey EQUAL IDENTIFIER
                    | objectkey EQUAL object
                    | objectkey EQUAL objectkey

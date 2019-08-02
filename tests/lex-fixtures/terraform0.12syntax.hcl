@@ -31,3 +31,7 @@ resource "aws_lambda_function" "github_collector" {
     }
   }
 }
+
+output "hostname" {
+  value = openstack_compute_instance_v2.instance.*.name
+}
