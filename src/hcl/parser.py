@@ -201,7 +201,6 @@ class HclParser(object):
         objectitem : objectkey EQUAL number
                    | objectkey EQUAL BOOL
                    | objectkey EQUAL STRING
-                   | objectkey EQUAL IDENTIFIER ASTERISK_PERIOD IDENTIFIER
                    | objectkey EQUAL IDENTIFIER
                    | objectkey EQUAL object
                    | objectkey EQUAL objectkey
@@ -261,6 +260,14 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
         p[0] = (p[1], p[3] + p[4] + str(p[5]) + p[6] + str(p[7]))
+
+    def p_objectitem_3(self, p):
+        '''
+          objectitem : objectkey EQUAL IDENTIFIER ASTERISK_PERIOD IDENTIFIER
+        '''
+        if DEBUG:
+            self.print_p(p)
+        p[0] = (p[1], str(p[3] + p[4] + p[5]))
 
     def p_operator_0(self, p):
         '''
@@ -395,6 +402,7 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
         p[0] = p[1] + p[2] + p[3]
+
 
     def p_number_0(self, p):
         "number : int"
