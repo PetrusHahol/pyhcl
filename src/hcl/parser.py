@@ -21,7 +21,6 @@ else:
     fobj = tempfile.NamedTemporaryFile()
     pickle_file = fobj.name
 
-
 if sys.version_info[0] < 3:
 
     def iteritems(d):
@@ -35,7 +34,6 @@ else:
 
 
 class HclParser(object):
-
     #
     # Tokens
     #
@@ -259,7 +257,7 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
-        p[0] = (p[1], p[3] + p[4] + str(p[5]) + p[6] + str(p[7]))
+        p[0] = (p[1], p[3] + " " + p[4] + " " + str(p[5]) + " " + p[6] + " " + str(p[7]))
 
     def p_objectitem_3(self, p):
         '''
@@ -402,7 +400,6 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
         p[0] = p[1] + p[2] + p[3]
-
 
     def p_number_0(self, p):
         "number : int"
