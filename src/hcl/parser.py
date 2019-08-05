@@ -288,7 +288,7 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
-        p[0] = str(p[1]) + p[2] + str(p[3])
+        p[0] = str(p[1]) + " " + p[2] + " " + str(p[3])
 
     def p_block_0(self, p):
         "block : objectkey object"
