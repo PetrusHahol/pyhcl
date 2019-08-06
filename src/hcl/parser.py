@@ -163,11 +163,13 @@ class HclParser(object):
                   | STRING
         '''
 
-        non_intepolation_signs = ['EQUAL', 'objectkey', 'LEFTBRACE', 'LEFTBRACKET', 'LEFTPAREN']
+        non_interpolation_signs = ['objectkey', 'LEFTBRACE', 'LEFTBRACKET', 'LEFTPAREN']
         if DEBUG:
             self.print_p(p)
-        if p[1].find("\"") == 0 and p.stack[-1].type in non_intepolation_signs:
+
+        if p[1].find("\"") == 0 and p.stack[-1].type in non_interpolation_signs:
             p[0] = p[1][1:len(p[1]) - 1]
+
         else:
             p[0] = p[1]
 
@@ -229,6 +231,8 @@ class HclParser(object):
             self.print_p(p)
         if isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
             p[0] = (p[1], "${%s}" % p[3])
+        elif isinstance(p[3], str) and p[3][0] == "\"":
+            p[0] = (p[1], p[3][1:len(p[3]) - 1])
         else:
             p[0] = (p[1], p[3])
 
