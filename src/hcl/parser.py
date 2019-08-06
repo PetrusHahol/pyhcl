@@ -162,9 +162,11 @@ class HclParser(object):
                   | STRING_IDENTIFIER
                   | STRING
         '''
+
+        non_intepolation_signs = ['EQUAL', 'objectkey', 'LEFTBRACE', 'LEFTBRACKET', 'LEFTPAREN']
         if DEBUG:
             self.print_p(p)
-        if p[1].find("\"") == 0 and (p.stack[-1].type == 'objectkey' or p.stack[-1].type == 'EQUAL'):
+        if p[1].find("\"") == 0 and p.stack[-1].type in non_intepolation_signs:
             p[0] = p[1][1:len(p[1]) - 1]
         else:
             p[0] = p[1]
@@ -182,7 +184,7 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
-        p[0] = (str(p[1]), str(p[2]), str(p[3]))
+        p[0] = "%s %s %s" % (p[1], p[2], p[3])
 
     def p_objectbrackets_0(self, p):
         "objectbrackets : IDENTIFIER LEFTBRACKET objectkey RIGHTBRACKET"
@@ -267,7 +269,7 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
-        p[0] = (p[1], p[3] + " " + p[4] + " " + str(p[5]) + " " + p[6] + " " + str(p[7]))
+        p[0] = (p[1], "${%s %s %s %s %s)" % (p[3], p[4], str(p[5]), p[6], str(p[7])))
 
     def p_objectitem_3(self, p):
         '''
