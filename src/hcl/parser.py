@@ -413,6 +413,13 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
+
+        if isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
+            p[3] = "${%s}" % p[3]
+
+        if isinstance(p[3], str) and p[3][0] == "\"":
+            p[3] = p[3][1:len(p[3]) - 1]
+
         p[0] = p[1] + [p[3]]
 
     def p_listitems_2(self, p):
@@ -426,6 +433,19 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
+
+        if isinstance(p[1], str) and p[1][0] != "\"" and p[3][0] != "$":
+            p[1] = "${%s}" % p[1]
+
+        if isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
+            p[3] = "${%s}" % p[3]
+
+        if isinstance(p[1], str) and p[1][0] == "\"":
+            p[1] = p[1][1:len(p[1]) - 1]
+
+        if isinstance(p[3], str) and p[3][0] == "\"":
+            p[3] = p[3][1:len(p[3]) - 1]
+
         p[0] = [p[1], p[3]]
 
     def p_listitems_3(self, p):

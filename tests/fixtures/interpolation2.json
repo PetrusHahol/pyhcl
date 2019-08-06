@@ -9,7 +9,8 @@
         },
         "security_group_ids": [
           "${id1}",
-          "${id2}"
+          "${id2}",
+          "id3"
         ],
         "admin_state_up": "true"
       }
