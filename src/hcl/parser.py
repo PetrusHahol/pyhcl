@@ -406,7 +406,7 @@ class HclParser(object):
                   | objectkey COMMA objectkey
                   | objectkey COMMA object
                   | objectkey COMMA list
-                  | objectkey COMMA IDENTIFIER ASTERISK_PERIOD IDENTIFIER
+
         '''
         if DEBUG:
             self.print_p(p)
@@ -420,6 +420,16 @@ class HclParser(object):
             self.print_p(p)
         p[2].insert(0, p[1])
         p[0] = p[2]
+
+
+    def p_listitems_4(self, p):
+        '''
+        listitems : objectkey COMMA IDENTIFIER ASTERISK_PERIOD IDENTIFIER
+
+        '''
+        if DEBUG:
+            self.print_p(p)
+        p[0] = [p[1], str(p[3] + p[4] + p[5])]
 
     def p_listitem_0(self, p):
         '''
