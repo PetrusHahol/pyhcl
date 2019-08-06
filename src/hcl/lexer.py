@@ -34,6 +34,7 @@ class Lexer(object):
         'NUMBER',
         'COMMA',
         'IDENTIFIER',
+        'STRING_IDENTIFIER',
         'EQUAL',
         'STRING',
         'ADD',
@@ -146,7 +147,11 @@ class Lexer(object):
         t.value = text_type(t.value)
         return t
 
-    # Strings
+    def t_STRING_IDENTIFIER(self, t):
+        r'"[^"]+"'
+        t.value = text_type(t.value)
+        return t
+
     def t_string(self, t):
         # Start of a string
         r'\"'
@@ -160,6 +165,7 @@ class Lexer(object):
         t.lexer.string_value = u''
         t.lexer.begin('string')
 
+    # Strings
     def t_string_escapedchar(self, t):
         # If a quote or backslash is escaped, build up the string by ignoring
         # the escape character. Should this be done for other characters?

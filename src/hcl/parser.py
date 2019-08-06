@@ -45,6 +45,7 @@ class HclParser(object):
         'COMMA',
         'COMMAEND',
         'IDENTIFIER',
+        'STRING_IDENTIFIER',
         'EQUAL',
         'STRING',
         'ADD',
@@ -158,11 +159,15 @@ class HclParser(object):
     def p_objectkey_0(self, p):
         '''
         objectkey : IDENTIFIER
+                  | STRING_IDENTIFIER
                   | STRING
         '''
         if DEBUG:
             self.print_p(p)
-        p[0] = p[1]
+        if p[1].find("\"") == 0 and (p.stack[-1].type == 'objectkey' or p.stack[-1].type == 'EQUAL'):
+            p[0] = p[1][1:len(p[1]) - 1]
+        else:
+            p[0] = p[1]
 
     def p_objectkey_1(self, p):
         '''
@@ -200,6 +205,7 @@ class HclParser(object):
                    | objectkey EQUAL BOOL
                    | objectkey EQUAL STRING
                    | objectkey EQUAL IDENTIFIER
+                   | objectkey EQUAL STRING_IDENTIFIER
                    | objectkey EQUAL object
                    | objectkey EQUAL objectkey
                    | objectkey EQUAL list
@@ -210,6 +216,7 @@ class HclParser(object):
                    | objectkey COLON BOOL
                    | objectkey COLON STRING
                    | objectkey COLON IDENTIFIER
+                   | objectkey COLON STRING_IDENTIFIER
                    | objectkey COLON object
                    | objectkey COLON objectkey
                    | objectkey COLON list
@@ -218,7 +225,10 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
-        p[0] = (p[1], p[3])
+        if isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
+            p[0] = (p[1], "${%s}" % p[3])
+        else:
+            p[0] = (p[1], p[3])
 
     def p_objectitem_1(self, p):
         "objectitem : block"
@@ -355,7 +365,7 @@ class HclParser(object):
                 if isFirstTime:
                     isFirstTime = False
                 else:
-                    returnValue += ","
+                    returnValue += ", "
                 returnValue += key + ":" + self.flatten(value[key])
             returnValue += "}"
         elif type(value) is list:
@@ -364,7 +374,7 @@ class HclParser(object):
                 if isFirstTime:
                     isFirstTime = False
                 else:
-                    returnValue += ","
+                    returnValue += ", "
                 returnValue += self.flatten(v)
         elif type(value) is tuple:
             isFirstTime = True
@@ -372,7 +382,7 @@ class HclParser(object):
                 if isFirstTime:
                     isFirstTime = False
                 else:
-                    returnValue += ","
+                    returnValue += ", "
                 returnValue += self.flatten(v)
         else:
             returnValue = value
@@ -420,7 +430,6 @@ class HclParser(object):
             self.print_p(p)
         p[2].insert(0, p[1])
         p[0] = p[2]
-
 
     def p_listitems_4(self, p):
         '''
