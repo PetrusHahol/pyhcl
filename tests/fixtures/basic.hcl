@@ -1,2 +1,2 @@
 foo = "bar"
-bar = "${file("bing/bong.txt")}"
+bar = file("bing/bong.txt")

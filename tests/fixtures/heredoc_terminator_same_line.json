@@ -1,4 +1,4 @@
 {
-    "foo": "\nbar\nbaz",
-    "bar": "foo\nbaz"
+    "foo": "${\nbar\nbaz}",
+    "bar": "${foo\nbaz}"
 }

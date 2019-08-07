@@ -18,18 +18,18 @@ LEX_FIXTURES = [
     (
         "array_comment.hcl",
         ["IDENTIFIER", "EQUAL", "LEFTBRACKET",
-        "STRING", "COMMA",
-        "STRING", "COMMA",
+        "STRING_IDENTIFIER", "COMMA",
+        "STRING_IDENTIFIER", "COMMA",
         "RIGHTBRACKET", None]
     ),
     (
         "comment.hcl",
-        ["IDENTIFIER", "EQUAL", "STRING", None]
+        ["IDENTIFIER", "EQUAL", "STRING_IDENTIFIER", None]
     ),
     (
         "multiple.hcl",
         [
-            "IDENTIFIER", "EQUAL", "STRING",
+            "IDENTIFIER", "EQUAL", "STRING_IDENTIFIER",
             "IDENTIFIER", "EQUAL", "NUMBER",
             None,
         ],
@@ -38,7 +38,7 @@ LEX_FIXTURES = [
         "list.hcl",
         [
             "IDENTIFIER", "EQUAL", "LEFTBRACKET",
-            "NUMBER", "COMMA", "NUMBER", "COMMA", "STRING",
+            "NUMBER", "COMMA", "NUMBER", "COMMA", "STRING_IDENTIFIER",
             "RIGHTBRACKET", None,
         ],
     ),
@@ -46,7 +46,7 @@ LEX_FIXTURES = [
         "list_comma.hcl",
         [
             "IDENTIFIER", "EQUAL", "LEFTBRACKET",
-            "NUMBER", "COMMA", "NUMBER", "COMMA", "STRING",
+            "NUMBER", "COMMA", "NUMBER", "COMMA", "STRING_IDENTIFIER",
             "COMMA", "RIGHTBRACKET", None,
         ],
     ),
@@ -54,10 +54,10 @@ LEX_FIXTURES = [
         "list_of_maps.hcl",
         [
             "IDENTIFIER", "EQUAL", "LEFTBRACKET",
-            "LEFTBRACE", "IDENTIFIER", "EQUAL", "STRING", "RIGHTBRACE",
+            "LEFTBRACE", "IDENTIFIER", "EQUAL", "STRING_IDENTIFIER", "RIGHTBRACE",
             "COMMA",
-            "LEFTBRACE", "IDENTIFIER", "EQUAL", "STRING", "COMMA",
-            "IDENTIFIER", "EQUAL", "STRING", "RIGHTBRACE", "COMMA",
+            "LEFTBRACE", "IDENTIFIER", "EQUAL", "STRING_IDENTIFIER", "COMMA",
+            "IDENTIFIER", "EQUAL", "STRING_IDENTIFIER", "RIGHTBRACE", "COMMA",
             "RIGHTBRACKET", None,
         ],
     ),
@@ -66,17 +66,17 @@ LEX_FIXTURES = [
         [
             "IDENTIFIER", "LEFTBRACE",
             "IDENTIFIER", "EQUAL", "NUMBER",
-            "STRING", "EQUAL", "NUMBER",
-            "STRING", "EQUAL", "NUMBER",
+            "STRING_IDENTIFIER", "EQUAL", "NUMBER",
+            "STRING_IDENTIFIER", "EQUAL", "NUMBER",
             "RIGHTBRACE", None,
         ],
     ),
     (
         "structure.hcl",
         [
-            "IDENTIFIER", "IDENTIFIER", "STRING", "LEFTBRACE",
+            "IDENTIFIER", "IDENTIFIER", "STRING_IDENTIFIER", "LEFTBRACE",
             "IDENTIFIER", "EQUAL", "NUMBER",
-            "IDENTIFIER", "EQUAL", "STRING",
+            "IDENTIFIER", "EQUAL", "STRING_IDENTIFIER",
             "RIGHTBRACE", None,
         ],
     ),
@@ -118,7 +118,7 @@ LEX_ERROR_FIXTURES = [
     (
         "old.hcl",
         [
-            "IDENTIFIER", "EQUAL", "LEFTBRACE", "STRING", "COLON", "STRING"
+            "IDENTIFIER", "EQUAL", "LEFTBRACE", "STRING_IDENTIFIER", "COLON", "STRING_IDENTIFIER"
         ],
         "Line 2, column 15, index 27: Illegal character ':'"
     ),
@@ -146,12 +146,7 @@ LEX_ERROR_FIXTURES = [
         'a = "foo',
         ["IDENTIFIER", "EQUAL", Error],
         "Line 1, column 8, index 8: EOF before closing string quote"
-    ),
-    (
-        'a = "${foo"',
-        ["IDENTIFIER", "EQUAL", Error],
-        "Line 1, column 11, index 11: EOF before closing '${}' expression"
-    ),
+    )
 
 ]
 
@@ -284,29 +279,29 @@ TOKEN_FIXTURES = [
     ("STRING", "<<EOF\nhello world\nEOF"),
 
     # Strings
-    ("STRING", '" "'),
-    ("STRING", '"a"'),
-    ("STRING", '"本"'),
-    ("STRING", '"{f}"'),
-    ("STRING", '"${file("foo")}"'),
-    ("STRING", r'"${file(\"foo\")}"'),
-    ("STRING", r'"\a"'),
-    ("STRING", r'"\b"'),
-    ("STRING", r'"\f"'),
-    ("STRING", r'"\n"'),
-    ("STRING", r'"\r"'),
-    ("STRING", r'"\t"'),
-    ("STRING", r'"\v"'),
-    ("STRING", r'"\""'),
-    ("STRING", r'"\000"'),
-    ("STRING", r'"\777"'),
-    ("STRING", r'"\x00"'),
-    ("STRING", r'"\xff"'),
-    ("STRING", r'"\u0000"'),
-    ("STRING", r'"\ufA16"'),
-    ("STRING", r'"\U00000000"'),
-    ("STRING", r'"\U0000ffAB"'),
-    ("STRING", '"' + f100 + '"'),
+    ("STRING_IDENTIFIER", '" "'),
+    ("STRING_IDENTIFIER", '"a"'),
+    ("STRING_IDENTIFIER", '"本"'),
+    ("STRING_IDENTIFIER", '"{f}"'),
+    ("STRING_IDENTIFIER", r'"\a"'),
+    ("STRING_IDENTIFIER", r'"\b"'),
+    ("STRING_IDENTIFIER", r'"\f"'),
+    ("STRING_IDENTIFIER", r'"\n"'),
+    ("STRING_IDENTIFIER", r'"\r"'),
+    ("STRING_IDENTIFIER", r'"\t"'),
+    ("STRING_IDENTIFIER", r'"\v"'),
+    ("STRING_IDENTIFIER", r'"\""'),
+    ("STRING_IDENTIFIER", r'"\000"'),
+    ("STRING_IDENTIFIER", r'"\777"'),
+    ("STRING_IDENTIFIER", r'"\x00"'),
+    ("STRING_IDENTIFIER", r'"\xff"'),
+    ("STRING_IDENTIFIER", r'"\u0000"'),
+    ("STRING_IDENTIFIER", r'"\ufA16"'),
+    ("STRING_IDENTIFIER", r'"\U00000000"'),
+    ("STRING_IDENTIFIER", r'"\U0000ffAB"'),
+    ("STRING_IDENTIFIER", '"' + f100 + '"'),
+
+    ("STRING_IDENTIFIER", r'"${file(\"foo\")}"'),
 
     # Numbers
     ("NUMBER", "0"),
