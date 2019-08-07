@@ -148,7 +148,7 @@ class Lexer(object):
         return t
 
     def t_STRING_IDENTIFIER(self, t):
-        r'"[^"]+"'
+        r'"(?:[^\\"]|\\.)*"'
         t.value = text_type(t.value)
         return t
 
