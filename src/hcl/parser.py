@@ -231,7 +231,10 @@ class HclParser(object):
             self.print_p(p)
 
         if p[1] == 'type':
-            p[0] = (p[1], p[3])
+            if p[3][0] == "\"":
+                p[0] = (p[1], p[3][1:len(p[3]) - 1])
+            else:
+                p[0] = (p[1], p[3])
 
         elif p[1] == 'depends_on':
             p[0] = (p[1], self.delete_interpolation(p[3]))
