@@ -229,7 +229,10 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
-        if isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
+
+        if p[1] == 'type' and p[3].find("list(") == 0:
+            p[0] = (p[1], p[3])
+        elif isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
             p[0] = (p[1], "${%s}" % p[3])
         elif isinstance(p[3], str) and p[3][0] == "\"":
             p[0] = (p[1], p[3][1:len(p[3]) - 1])
