@@ -163,7 +163,7 @@ class HclParser(object):
                   | STRING
         '''
 
-        non_interpolation_signs = ['objectkey', 'LEFTBRACE', 'LEFTBRACKET', 'LEFTPAREN']
+        non_interpolation_signs = ['objectkey', 'LEFTBRACE']
         if DEBUG:
             self.print_p(p)
 
@@ -363,6 +363,7 @@ class HclParser(object):
         p[0] = p[1] + p[2] + self.flatten(p[3]) + p[5]
 
     def flatten(self, value):
+
         returnValue = ""
         if type(value) is dict:
             returnValue += "{"
@@ -392,6 +393,9 @@ class HclParser(object):
                 returnValue += self.flatten(v)
         else:
             returnValue = value
+            if isinstance(returnValue, str) and returnValue[0:2] == "${" and returnValue[-1] == "}":
+                returnValue = returnValue[2:len(returnValue) - 1]
+
         return returnValue
 
     def p_listitems_0(self, p):
