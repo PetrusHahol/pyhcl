@@ -57,10 +57,10 @@ def test_decoder(hcl_fname, json_fname, struct):
         with open(join(FIXTURE_DIR, json_fname), 'r') as fp:
             good_json = json.load(fp)
 
-        # assert hcl_json == good_json
+        assert hcl_json == good_json
 
-        with open(FIXTURE_DIR + "/test.json", 'w') as fp:
-            json.dump(hcl_json, fp, indent=4)
+        # with open(FIXTURE_DIR + "/test.json", 'w') as fp:
+        #     json.dump(hcl_json, fp, indent=4)
 
 
     if struct is not None:
