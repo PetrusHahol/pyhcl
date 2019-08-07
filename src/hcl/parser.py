@@ -289,7 +289,7 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
-        p[0] = (p[1], str(p[3] + p[4] + p[5]))
+        p[0] = (p[1], "${%s%s%s}" % (p[3], p[4], p[5]))
 
     def p_operator_0(self, p):
         '''
