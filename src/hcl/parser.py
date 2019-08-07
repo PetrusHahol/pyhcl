@@ -232,8 +232,13 @@ class HclParser(object):
 
         if p[1] == 'type':
             p[0] = (p[1], p[3])
+
+        elif p[1] == 'depends_on':
+            p[0] = (p[1], self.delete_interpolation(p[3]))
+
         elif isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
             p[0] = (p[1], "${%s}" % p[3])
+
         elif isinstance(p[3], str) and p[3][0] == "\"":
             p[0] = (p[1], p[3][1:len(p[3]) - 1])
         else:
@@ -395,9 +400,7 @@ class HclParser(object):
                     returnValue += ", "
                 returnValue += self.flatten(v)
         else:
-            returnValue = value
-            if isinstance(returnValue, str) and returnValue[0:2] == "${" and returnValue[-1] == "}":
-                returnValue = returnValue[2:len(returnValue) - 1]
+            returnValue = self.delete_interpolation(value)
 
         return returnValue
 
@@ -410,6 +413,10 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
+
+        if isinstance(p[1], str) and p[1][0] != "\"" and p[1][0] != "$":
+            p[1] = "${%s}" % p[1]
+
         p[0] = [p[1]]
 
     def p_listitems_1(self, p):
@@ -441,7 +448,7 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
 
-        if isinstance(p[1], str) and p[1][0] != "\"" and p[3][0] != "$":
+        if isinstance(p[1], str) and p[1][0] != "\"" and p[1][0] != "$":
             p[1] = "${%s}" % p[1]
 
         if isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
@@ -606,6 +613,13 @@ class HclParser(object):
             msg = "Unexpected end of file%s" % expected
 
         raise ValueError(msg)
+
+    def delete_interpolation(self, value):
+        if isinstance(value, str) and value[0:2] == "${" and value[-1] == "}":
+            return value[2:len(value) - 1]
+        elif isinstance(value, list):
+            return [self.delete_interpolation(v) for v in value]
+        return value
 
     def __init__(self):
         self.yacc = yacc.yacc(
