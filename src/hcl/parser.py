@@ -167,9 +167,8 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
 
-        if p[1].find("\"") == 0 and p.stack[-1].type in non_interpolation_signs:
-            p[0] = p[1][1:len(p[1]) - 1]
-
+        if p.stack[-1].type in non_interpolation_signs:
+            p[0] = self.delete_quotes(p[1])
         else:
             p[0] = p[1]
 
@@ -231,21 +230,15 @@ class HclParser(object):
             self.print_p(p)
 
         if p[1] == 'type':
-            if p[3][0] == "\"":
-                p[0] = (p[1], p[3][1:len(p[3]) - 1])
-            else:
-                p[0] = (p[1], p[3])
+            p[0] = (p[1], self.delete_quotes(p[3]))
 
         elif p[1] == 'depends_on':
             p[0] = (p[1], self.delete_interpolation(p[3]))
 
         elif isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
             p[0] = (p[1], "${%s}" % p[3])
-
-        elif isinstance(p[3], str) and p[3][0] == "\"":
-            p[0] = (p[1], p[3][1:len(p[3]) - 1])
         else:
-            p[0] = (p[1], p[3])
+            p[0] = (p[1], self.delete_quotes(p[3]))
 
     def p_objectitem_1(self, p):
         "objectitem : block"
@@ -431,12 +424,8 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
 
-        if isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
-            p[3] = "${%s}" % p[3]
-
-        if isinstance(p[3], str) and p[3][0] == "\"":
-            p[3] = p[3][1:len(p[3]) - 1]
-
+        p[3] = self.add_interpolation(p[3])
+        p[3] = self.delete_quotes(p[3])
         p[0] = p[1] + [p[3]]
 
     def p_listitems_2(self, p):
@@ -451,20 +440,11 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
 
-        if isinstance(p[1], str) and p[1][0] != "\"" and p[1][0] != "$":
-            p[1] = "${%s}" % p[1]
-
-        if isinstance(p[3], str) and p[3][0] != "\"" and p[3][0] != "$":
-            p[3] = "${%s}" % p[3]
-
+        p[1] = self.add_interpolation(p[1])
+        p[3] = self.add_interpolation(p[3])
         if p.stack[-1].type == 'LEFTBRACKET':
-
-            if isinstance(p[1], str) and p[1][0] == "\"":
-                p[1] = p[1][1:len(p[1]) - 1]
-
-            if isinstance(p[3], str) and p[3][0] == "\"":
-                p[3] = p[3][1:len(p[3]) - 1]
-
+            p[1] = self.delete_quotes(p[1])
+            p[3] = self.delete_quotes(p[3])
 
         p[0] = [p[1], p[3]]
 
@@ -625,6 +605,16 @@ class HclParser(object):
             msg = "Unexpected end of file%s" % expected
 
         raise ValueError(msg)
+
+    def add_interpolation(self, value):
+        if isinstance(value, str) and value.find("\"") != 0 and value.find("$") != 0:
+            value = "${%s}" % value
+        return value
+
+    def delete_quotes(self, value):
+        if isinstance(value, str) and value.find("\"") == 0:
+            value = value[1:len(value) - 1]
+        return value
 
     def delete_interpolation(self, value):
         if isinstance(value, str) and value[0:2] == "${" and value[-1] == "}":
