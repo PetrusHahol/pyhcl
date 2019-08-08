@@ -56,6 +56,8 @@ as the `schematics <https://pypi.python.org/pypi/schematics>`_ library.
 Syntax
 ======
 
+Only  terraform version 12 syntax is supported.
+
 -  Single line comments start with ``#`` or ``//``
 
 -  Multi-line comments are wrapped in ``/*`` and ``*/``
