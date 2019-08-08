@@ -400,7 +400,9 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
 
-        p[0] = p[1] + p[2] + p[3] + self.flatten(p[4]) + p[5] + p[6] + p[7] + p[8] + p[9]
+        p[0] = (
+            p[1] + p[2] + p[3] + self.flatten(p[4]) + p[5] + p[6] + p[7] + p[8] + p[9]
+        )
 
     def flatten(self, value):
 
@@ -632,12 +634,12 @@ class HclParser(object):
 
     def delete_quotes(self, value):
         if isinstance(value, str) and value.find("\"") == 0:
-            value = value[1:len(value) - 1]
+            value = value[1 : len(value) - 1]
         return value
 
     def delete_interpolation(self, value):
         if isinstance(value, str) and value[0:2] == "${" and value[-1] == "}":
-            return value[2:len(value) - 1]
+            return value[2 : len(value) - 1]
         elif isinstance(value, list):
             return [self.delete_interpolation(v) for v in value]
         return value
