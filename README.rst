@@ -4,7 +4,7 @@ pyhcl
 |Build Status|
 
 Implements a parser for `HCL (HashiCorp Configuration
-Language) <https://github.com/hashicorp/hcl>`__ in Python. This
+Language) <https://github.com/hashicorp/hcl2>`__ in Python. This
 implementation aims to be compatible with the original golang version of
 the parser.
 
@@ -17,7 +17,7 @@ Installation
 
 ::
 
-    pip install pyhcl
+    pip install pyhcl2
 
 Usage
 =====
@@ -37,7 +37,7 @@ Currently the dumps function outputs JSON, and not HCL.
 Convert HCL to JSON
 -------------------
 
-pyhcl comes with a script that you can use to easily convert HCL to JSON,
+pyhcl2 comes with a script that you can use to easily convert HCL to JSON,
 similar to the json.tool that comes with python::
 
 	hcltool INFILE [OUTFILE]
