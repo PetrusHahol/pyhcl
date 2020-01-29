@@ -41,6 +41,7 @@ FIXTURES = [
     ('interpolation.hcl', 'interpolation.json', None),
     ('interpolation2.hcl', 'interpolation2.json', None),
     ('depends_on.hcl', 'depends_on.json', None),
+    ('no_argument_function.hcl', 'no_argument_function.json', None),
 ]
 
 
