@@ -40,8 +40,7 @@ FIXTURES = [
     ('heredoc_terminator_same_line.hcl', 'heredoc_terminator_same_line.json', None),
     ('interpolation.hcl', 'interpolation.json', None),
     ('interpolation2.hcl', 'interpolation2.json', None),
-    ('depends_on.hcl', 'depends_on.json', None),
-    ('no_argument_function.hcl', 'no_argument_function.json', None),
+    ('interpolation3.hcl', 'interpolation3.json', None),
 ]
 
 

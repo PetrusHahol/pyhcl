@@ -381,7 +381,7 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
 
-        p[0] = p[1] + p[2] + self.flatten(p[3]) + p[4]
+        p[0] = p[1] + p[2] + self.json_flatten(p[3]) + p[4]
 
     def p_function_2(self, p):
         '''
@@ -391,7 +391,7 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
 
-        p[0] = p[1] + p[2] + self.flatten(p[3]) + p[5]
+        p[0] = p[1] + p[2] + self.json_flatten(p[3]) + p[5]
 
     def p_function_3(self, p):
         '''
@@ -400,7 +400,7 @@ class HclParser(object):
         if DEBUG:
             self.print_p(p)
 
-        p[0] = p[1] + p[2] + self.flatten(p[3]) + p[4] + p[5] + p[6] + p[7]
+        p[0] = p[1] + p[2] + self.json_flatten(p[3]) + p[4] + p[5] + p[6] + p[7]
 
     def p_function_4(self, p):
         '''
@@ -410,25 +410,27 @@ class HclParser(object):
             self.print_p(p)
 
         p[0] = (
-            p[1] + p[2] + p[3] + self.flatten(p[4]) + p[5] + p[6] + p[7] + p[8] + p[9]
+                p[1] + p[2] + p[3] + self.json_flatten(p[4]) + p[5] + p[6] + p[7] + p[8] + p[9]
         )
 
-    def flatten(self, value):
+    def json_flatten(self, value):
 
         if type(value) is dict:
-            returnValue = (
-                "{"
-                + ", ".join(key + ":" + self.flatten(value[key]) for key in value)
-                + "}"
+            answer = (
+                    "{"
+                    + ", ".join(key + ":" + self.json_flatten(value[key]) for key in value)
+                    + "}"
             )
         elif type(value) is list:
-            returnValue = ", ".join(self.flatten(v) for v in value)
+            answer = ", ".join(self.json_flatten(v) for v in value)
         elif type(value) is tuple:
-            returnValue = ", ".join(self.flatten(v) for v in value)
+            answer = ", ".join(self.json_flatten(v) for v in value)
         else:
-            returnValue = self.delete_interpolation(value)
+            answer = self.add_quotes(value)
+            answer = self.delete_interpolation(answer)
 
-        return returnValue
+        return answer
+
 
     def p_listitems_0(self, p):
         '''
@@ -451,6 +453,15 @@ class HclParser(object):
                   | listitems COMMA function
                   | listitems COMMA objectkey
         '''
+        # non_interpolation_signs = ['objectkey', 'LEFTBRACE']
+        #
+        # if DEBUG:
+        #     self.print_p(p)
+        #
+        # p[3] = self.add_interpolation(p[3])
+        # if p.stack[-1].type in non_interpolation_signs:
+        #     p[3] = self.delete_quotes(p[3])
+        # p[0] = p[1] + [str(p[3])]
         if DEBUG:
             self.print_p(p)
 
@@ -494,7 +505,7 @@ class HclParser(object):
         '''
         if DEBUG:
             self.print_p(p)
-        p[0] = [p[1], str(p[3] + p[4] + p[5])]
+        p[0] = [p[1], self.add_interpolation(str(p[3] + p[4] + p[5]))]
 
     def p_listitem_0(self, p):
         '''
@@ -643,12 +654,18 @@ class HclParser(object):
 
     def delete_quotes(self, value):
         if isinstance(value, str) and value.find("\"") == 0:
-            value = value[1 : len(value) - 1]
+            value = value[1: len(value) - 1]
         return value
+
+    def add_quotes(self, value):
+        if isinstance(value, str) and value.find("\"") != 0 and value.find("$") != 0:
+            value = "\"%s\"" % value
+        return value
+
 
     def delete_interpolation(self, value):
         if isinstance(value, str) and value[0:2] == "${" and value[-1] == "}":
-            return value[2 : len(value) - 1]
+            return value[2: len(value) - 1]
         elif isinstance(value, list):
             return [self.delete_interpolation(v) for v in value]
         return value
