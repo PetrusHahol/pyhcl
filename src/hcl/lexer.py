@@ -1,3 +1,5 @@
+import mock
+import regex as regex
 import re
 import sys
 import ply.lex as lex
@@ -148,7 +150,7 @@ class Lexer(object):
         return t
 
     def t_STRING_IDENTIFIER(self, t):
-        r'"(?:[^\\"]|\\.)*"'
+        r'\"[^{"]*\{(?:[^{}]*(?R)?)*\}[^"]*\"|\"(?:[^\\"]|\\.)*\"'
         t.value = text_type(t.value)
         return t
 
@@ -283,8 +285,8 @@ class Lexer(object):
         if t.lexer.is_tabbed:
             # Get rid of any initial tabs, and remove any tabs preceded by
             # a new line
-            chopped_starting_tabs = re.sub('^\t*', '', entire_string)
-            t.value = re.sub('\n\t*', '\n', chopped_starting_tabs)
+            chopped_starting_tabs = regex.sub('^\t*', '', entire_string)
+            t.value = regex.sub('\n\t*', '\n', chopped_starting_tabs)
         else:
             t.value = entire_string
 
@@ -362,12 +364,15 @@ class Lexer(object):
             _raise_error(t)
 
     def __init__(self):
-        self.lex = lex.lex(
-            module=self,
-            debug=False,
-            reflags=(re.UNICODE | re.MULTILINE),
-            errorlog=lex.NullLogger(),
-        )
+
+        with mock.patch('re.compile', regex.compile):
+            with mock.patch('re.finditer', regex.finditer):
+                self.lex = lex.lex(
+                    module=self,
+                    debug=False,
+                    reflags=(regex.DEBUG | regex.VERBOSE | regex.UNICODE | regex.MULTILINE),
+                    errorlog=lex.NullLogger(),
+                )
 
     def input(self, s):
         return self.lex.input(s)

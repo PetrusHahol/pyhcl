@@ -662,7 +662,6 @@ class HclParser(object):
             value = "\"%s\"" % value
         return value
 
-
     def delete_interpolation(self, value):
         if isinstance(value, str) and value[0:2] == "${" and value[-1] == "}":
             return value[2: len(value) - 1]
