@@ -150,7 +150,7 @@ class Lexer(object):
         return t
 
     def t_STRING_IDENTIFIER(self, t):
-        r'\"[^{"]*\{(?:[^{}]*(?R)?)*\}[^"]*\"|\"(?:[^\\"]|\\.)*\"'
+        r'\"(?:[^${}"\\]|\\.)*?(\$\{(?:[^${}]*?(?R)?)*?\})?(?:[^${}"\\]|\\.)*?\"'
         t.value = text_type(t.value)
         return t
 
@@ -370,7 +370,7 @@ class Lexer(object):
                 self.lex = lex.lex(
                     module=self,
                     debug=False,
-                    reflags=(regex.DEBUG | regex.VERBOSE | regex.UNICODE | regex.MULTILINE),
+                    reflags=(regex.UNICODE | regex.MULTILINE),
                     errorlog=lex.NullLogger(),
                 )
 

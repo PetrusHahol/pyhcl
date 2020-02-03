@@ -13,7 +13,35 @@ import pytest
 # hcl, json, dict
 FIXTURE_DIR = join(dirname(__file__), 'fixtures')
 FIXTURES = [
+    ('array_comment.hcl', 'array_comment.json', None),
+    ('basic.hcl', 'basic.json', None),
+    ('basic_squish.hcl', None, {'foo': 'bar', 'bar': '${file("bing/bong.txt")}', 'foo-bar': "baz"}),
+    ('decode_policy.hcl', 'decode_policy.json', None),
+    ('decode_tf_variable.hcl', 'decode_tf_variable.json', None),
+    ('empty.hcl', None, {'resource': {'foo': {}}}),
+    ('escape.hcl', None, {'foo': 'bar\\"baz\\\\n'}),
+    ('flat.hcl', None, {'foo': 'bar', 'Key': 7}),
+    ('float.hcl', None, {'a': 1.02}),
+    ('float.hcl', 'float.json', None),
+    ('multiline_bad.hcl', 'multiline.json', None),
+    ('scientific.hcl', 'scientific.json', None),
+    ('structure.hcl', 'structure_flat.json', None),
+    # ('structure2.hcl', 'structure2.json', None),  # not in the golang tests
+    ('structure_flatmap.hcl', 'structure_flatmap.json', None),
+    ('structure_list.hcl', 'structure_list.json', None),  # these don't match in golang either
+    ('structure_list.hcl', None, {'foo': [{'key': 7}, {'key': 12}]}),  # nor this
     ('issue12.hcl', 'issue12.json', None),
+    # 'structure_list_deep.json'
+    ('structure_multi.hcl', 'structure_multi.json', None),
+    ('structure_three_tiers.hcl', 'structure_three_tiers.json', None),
+    ('tab_heredoc.hcl', 'tab_heredoc.json', None),
+    ('terraform_heroku.hcl', 'terraform_heroku.json', None),
+    ('structure_list_deep.hcl', 'structure_list_deep.json', None),
+    ('heredoc_terminator_same_line.hcl', 'heredoc_terminator_same_line.json', None),
+    ('interpolation.hcl', 'interpolation.json', None),
+    ('interpolation2.hcl', 'interpolation2.json', None),
+    ('interpolation3.hcl', 'interpolation3.json', None),
+    ('quotes_inside_of_interpolation.hcl', 'quotes_inside_of_interpolation.json', None),
 ]
 
 
