@@ -41,7 +41,6 @@ FIXTURES = [
     ('interpolation.hcl', 'interpolation.json', None),
     ('interpolation2.hcl', 'interpolation2.json', None),
     ('interpolation3.hcl', 'interpolation3.json', None),
-    ('quotes_inside_of_interpolation.hcl', 'quotes_inside_of_interpolation.json', None),
 ]
 
 
@@ -55,9 +54,6 @@ def test_decoder(hcl_fname, json_fname, struct):
     if json_fname is not None:
         with open(join(FIXTURE_DIR, json_fname), 'r') as fp:
             good_json = json.load(fp)
-
-        with open(FIXTURE_DIR + "/"+hcl_fname+"_test.json", 'w') as fp:
-            json.dump(hcl_json, fp, indent=4)
 
         assert hcl_json == good_json
 
